@@ -5,7 +5,7 @@ const getNumInStr = (str: string): number[] => {
 };
 
 const getFileSuffix = (url: string) => {
-  return url.substring(url.lastIndexOf(".") + 1);
+  return url.substring(url.lastIndexOf(".") + 1).toLowerCase();
 };
 
 const isImg = (url: string) => {

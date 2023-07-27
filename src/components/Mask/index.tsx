@@ -8,8 +8,8 @@ import {
 import { createPortal } from "react-dom";
 
 import "./styles.css";
-import { useLockBodyScroll } from "../useLockBodyScroll";
-import { usePortal } from "../usePortal";
+import { useLockBodyScroll } from "../../hooks/useLockBodyScroll";
+import { usePortal } from "../../hooks/usePortal";
 
 interface PropTypes {
   children: ReactElement;

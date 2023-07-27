@@ -10,22 +10,18 @@ function createWindow() {
     width: 950,
     height: 750,
     webPreferences: {
-      // nodeIntegration: true,
-      // contextIsolation: true,
       webSecurity: false,
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
   if (app.isPackaged) {
-    // 'build/index.html'
     win.loadURL(`file://${__dirname}/../index.html`);
   } else {
     win.loadURL("http://localhost:3000/index.html");
 
     win.webContents.openDevTools();
 
-    // Hot Reloading on 'node_modules/.bin/electronPath'
     require("electron-reload")(__dirname, {
       electron: path.join(
         __dirname,
@@ -41,27 +37,24 @@ function createWindow() {
   }
 }
 
+// clean up dir
+const emptyDir = (path: string) => {
+  const files = fs.readdirSync(path);
+  files.forEach((file: any) => {
+    const filePath = `${path}/${file}`;
+    const stats = fs.statSync(filePath);
+    if (stats.isDirectory()) {
+      emptyDir(filePath);
+    } else {
+      fs.unlinkSync(filePath);
+    }
+  });
+};
+
 const createDirs = (dirs: string[]) => {
-  // let index = 1;
-  // function next(index: number) {
-  //   //递归结束判断
-  //   if (index > paths.length) return "creat dirs ok!!";
-  //   let newPath = paths.slice(0, index).join("/");
-  //   fs.access(newPath, function (err: any) {
-  //     if (err) {
-  //       //如果文件不存在，就创建这个文件
-  //       fs.mkdir(newPath, function (err: any) {
-  //         next(index + 1);
-  //       });
-  //     } else {
-  //       //如果这个文件已经存在，就进入下一个循环
-  //       next(index + 1);
-  //     }
-  //   });
-  // }
-  // next(index);
   for (const dir of dirs) {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+    else emptyDir(dir);
   }
   return "creat dirs ok!!";
 };
@@ -73,15 +66,25 @@ const writeFiles = (path: string, contents: any) => {
   return "file write ok!! ";
 };
 
-app.whenReady().then(() => {
+const renderEventHandler = () => {
+  ipcMain.handle("sayhello", () => {
+    console.log(`主程序收到。。。sayhello:`);
+    return "oh,🐠 got message and return back  from main process";
+  });
+
   ipcMain.handle("create-dir", (event, message) => {
-    console.log(`主程序收到。。。create-dir:`, message);
+    console.log(`主程序收到。。。create-dir:`);
     return createDirs(message.dirs);
   });
+
   ipcMain.handle("write-file", (event, message) => {
-    console.log("主程序收到。。。write-file: ", message);
+    console.log("主程序收到。。。write-file: ");
     return writeFiles(message.path, message.contents);
   });
+};
+
+app.whenReady().then(() => {
+  renderEventHandler();
 
   // DevTools
   installExtension(REACT_DEVELOPER_TOOLS)
