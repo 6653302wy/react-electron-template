@@ -68,17 +68,17 @@ const writeFiles = (path: string, contents: any) => {
 
 const renderEventHandler = () => {
   ipcMain.handle("sayhello", () => {
-    console.log(`主程序收到。。。sayhello:`);
-    return "oh,🐠 got message and return back  from main process";
+    console.log(`main render receive msg: sayhello:`);
+    return "Hi, i got message and this is return from main process";
   });
 
   ipcMain.handle("create-dir", (event, message) => {
-    console.log(`主程序收到。。。create-dir:`);
+    console.log(`main render receive msg: create-dir:`);
     return createDirs(message.dirs);
   });
 
   ipcMain.handle("write-file", (event, message) => {
-    console.log("主程序收到。。。write-file: ");
+    console.log("main render receive msg: write-file: ");
     return writeFiles(message.path, message.contents);
   });
 };
