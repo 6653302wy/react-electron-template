@@ -15,3 +15,8 @@ a desk app  project scaffolding with electron & react
 - dayjs
 - classnames
 
+### install & run
+
+1. clone & run `npm run install`
+2. run `npm run electron:dev`
+3. to build , run `npm run electron:build-win` or `electron:build-mac-m1` (sorry, just apple silicon on macos)
